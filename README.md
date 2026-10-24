@@ -1,138 +1,263 @@
-Keyboard Interaction Time-Series Analysis
-Time-Domain & Frequency-Domain Analysis of Keystroke Timing Data
+⌨️ Keyboard Interaction Time-Series Analysis
 
 <p align="center">
-<img src="https://img.shields.io/badge/Python-3.12-blue?logo=python&logoColor=white" alt="Python 3.12">
-<img src="https://img.shields.io/badge/NumPy-FFT-013243?logo=numpy" alt="NumPy FFT">
-<img src="https://img.shields.io/badge/Pandas-Data%20Analysis-150458?logo=pandas" alt="Pandas">
-<img src="https://img.shields.io/badge/Matplotlib-Visualization-11557C" alt="Matplotlib">
-<img src="https://img.shields.io/badge/Project-HCI%20Lab-orange" alt="HCI Lab Project">
+<b>Understanding Keystroke Timing Through Statistics and Signal Processing</b>
+<br><br>
+<img src="https://img.shields.io/badge/Python-3.12-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python">
+<img src="https://img.shields.io/badge/NumPy-FFT-013243?style=for-the-badge&logo=numpy&logoColor=white" alt="NumPy">
+<img src="https://img.shields.io/badge/SciPy-Signal_Processing-8CAAE6?style=for-the-badge&logo=scipy&logoColor=white" alt="SciPy">
+<img src="https://img.shields.io/badge/Project-HCI_Lab-orange?style=for-the-badge" alt="HCI Lab">
 </p>
 
+📌 Table of Contents
 About the Project
-
-This project explores keyboard interaction patterns using time-series analysis of keystroke timing measurements from the Carnegie Mellon University (CMU) Keystroke Dynamics Benchmark.
-
-It combines statistical analysis and signal processing to investigate how key hold durations vary across repeated typing trials.
-
-The project implements two complementary approaches:
-
-Approach	Purpose
-Time-Domain Analysis	Summarizes hold durations using descriptive statistics and visualizes variation across repetitions.
-Frequency-Domain Analysis	Applies the Fast Fourier Transform (FFT) to explore variation across repetition-order frequencies.
-Objective: Understand how statistical methods and signal processing techniques can be applied to keyboard interaction measurements using Python.
 Research Question
+Dataset
+Analysis Workflow
+Results
+Visualizations
+Project Structure
+Installation and Execution
+Limitations
+Future Improvements
+Attribution and License
+🔍 About the Project
+
+Keyboard Interaction Time-Series Analysis is a small Human-Computer Interaction (HCI) lab project that studies variations in keyboard timing measurements using Python.
+
+The project uses the CMU Keystroke Dynamics Benchmark to analyze how long a key is held down across repeated typing trials.
+
+Two complementary analytical methods are used:
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+📊 Time-Domain Analysis
+
+Examines the measurements directly using descriptive statistics.
+
+Mean hold duration
+Standard deviation
+Minimum and maximum
+Median
+Variation across repetitions
+
+</td>
+<td width="50%" valign="top">
+
+📈 Frequency-Domain Analysis
+
+Uses the Fast Fourier Transform (FFT) to investigate variation across the ordered sequence.
+
+Linear detrending
+Hann windowing
+FFT amplitude spectrum
+Dominant nonzero frequency
+Approximate spectral period
+
+</td>
+</tr>
+</table>
+
+Main objective: Learn how statistical analysis, visualization, and signal-processing techniques can be applied to keyboard interaction data.
+
+This project is for educational and analytical purposes. It does not implement a keystroke-based authentication system.
+🎯 Research Question
 
 How can time-domain statistics and frequency-domain analysis characterize variation in a keyboard timing feature across repeated typing trials?
 
-📂 Dataset
+The analysis focuses on the hold duration of the period (.) key for one participant in one session.
 
-Source: CMU Keystroke Dynamics Benchmark
+📁 Dataset
+CMU Keystroke Dynamics Benchmark
 
-The dataset contains:
+The dataset was developed for research into keystroke dynamics and contains:
 
-20,400 keystroke records
-51 participants
-8 sessions per participant
-400 password repetitions per participant
-50 repetitions per session
+Dataset property	Description
+Total records	20,400
+Participants	51
+Sessions per participant	8
+Repetitions per participant	400
+Repetitions per session	50
+File format	CSV
 Features Used
-Feature	Description
-subject	Participant identifier
-sessionIndex	Session number
+Feature	Meaning
+subject	Identifies the participant
+sessionIndex	Identifies the session
 rep	Repetition number within a session
-H.period	Hold duration of the period (.) key
+H.period	Hold duration of the period key
+Dataset Installation
 
-The analysis focuses on participant s002, session 1, using 50 observations of the H.period feature.
+The dataset is not included in this repository.
 
-Dataset Setup
-
-The dataset is not included in this repository. Download it from the official CMU source and place the CSV file in the following location:
+Download it from the official CMU dataset source and place it at:
 
 text
 data/DSL-StrongPasswordData.csv
 
 
-Please consult the original dataset documentation for attribution and reuse terms.
+The analysis expects this exact filename and location. Dataset attribution and reuse must follow the original source's terms.
 
-⚙️ Methodology
+⚙️ Analysis Workflow
+
+The notebook follows a reproducible sequence of data preparation, statistical analysis, signal processing, and visualization.
+
+<p align="center">
+<b>Load Dataset</b>
+<br>↓<br>
+<b>Select Participant and Session</b>
+<br>↓<br>
+<b>Extract H.period Measurements</b>
+<br>↓<br>
+<b>Time-Domain Statistics</b>
+<br>↓<br>
+<b>Detrending → Hann Window → FFT</b>
+<br>↓<br>
+<b>Generate and Save Visualizations</b>
+</p>
+
 1. Data Preparation
-Load the CSV dataset using Pandas.
-Inspect its structure and check for missing values.
-Select participant s002 and session 1.
-Extract the H.period feature.
-Sort the observations by repetition number.
+
+The dataset is loaded using Pandas. The notebook selects:
+
+Participant: s002
+Session: 1
+Feature: H.period
+Observations: 50
+Repetition range: 1–50
+
+The observations are sorted by repetition number, and missing feature values are checked.
+
 2. Time-Domain Analysis
 
-Calculate the following descriptive statistics:
+The selected hold durations are summarized using descriptive statistics.
 
-Mean
-Standard deviation
-Minimum
-Maximum
-Median
+The mean represents the average hold duration, while the standard deviation describes how much the measurements vary around the mean. The minimum, maximum, and median provide additional information about the distribution.
 
-A line plot illustrates hold duration across repetitions, with a horizontal line marking the mean.
+A line plot displays the measurements in repetition order, with a horizontal line indicating the mean.
 
-Output: outputs/time_domain_H_period.png
+Generated file: outputs/time_domain_H_period.png
 
-3. Frequency-Domain Analysis (FFT)
+3. Frequency-Domain Analysis
 
-The FFT analysis follows these steps:
+The ordered sequence is processed using SciPy and NumPy.
 
-Remove the linear trend using SciPy.
-Apply a Hann window to reduce spectral leakage.
-Compute the one-sided FFT using rfft.
-Calculate frequency bins using rfftfreq.
-Estimate the amplitude spectrum.
-Identify the strongest nonzero frequency component.
-Calculate the corresponding approximate period.
-Plot the spectrum and highlight the dominant frequency.
+Processing step	Purpose
+Linear detrending	Removes the estimated linear trend
+Hann window	Reduces spectral leakage
+Real FFT (rfft)	Computes the frequency-domain representation
+Frequency bins (rfftfreq)	Identifies the corresponding frequencies
+Amplitude calculation	Estimates the strength of spectral components
+Peak detection	Finds the strongest nonzero component
 
-Output: outputs/fft_H_period.png
+The frequency with the highest nonzero amplitude is selected, and its reciprocal is used to calculate the approximate period in repetitions.
 
-Results
-Time-Domain Analysis
+Generated file: outputs/fft_H_period.png
 
-The following statistics were obtained for the 50 selected observations.
+Important: These observations are indexed by password repetition, not by uniformly sampled continuous time. Consequently, frequency is expressed in cycles per repetition, not hertz. A spectral peak does not prove the existence of a continuous typing rhythm or stable behavioral cycle.
 
-Metric	Value
-Number of observations	50
-Mean	0.111288 s
-Standard deviation	0.015222 s
-Minimum	0.077600 s
-Maximum	0.149100 s
-Median	0.111800 s
+📊 Results and Findings
 
-Key observation: The average hold duration was approximately 111.3 milliseconds, with a standard deviation of approximately 15.2 milliseconds.
+The following results were obtained from participant s002, session 1.
 
-Frequency-Domain Analysis
-Metric	Value
-Frequency resolution	0.0200 cycles/repetition
-Dominant nonzero frequency	0.3600 cycles/repetition
-Approximate spectral period	2.78 repetitions
-Peak amplitude	0.008922 s (approximate)
+Time-Domain Results
 
-Key observation: The strongest nonzero spectral component occurred at 0.36 cycles per repetition, corresponding to approximately 2.78 repetitions per cycle.
+<table>
+<tr>
+<th align="left">Metric</th>
+<th align="right">Result</th>
+</tr>
+<tr>
+<td>Number of observations</td>
+<td align="right">50</td>
+</tr>
+<tr>
+<td>Mean hold duration</td>
+<td align="right"><b>111.288 ms</b></td>
+</tr>
+<tr>
+<td>Standard deviation</td>
+<td align="right">15.222 ms</td>
+</tr>
+<tr>
+<td>Minimum hold duration</td>
+<td align="right">77.600 ms</td>
+</tr>
+<tr>
+<td>Maximum hold duration</td>
+<td align="right">149.100 ms</td>
+</tr>
+<tr>
+<td>Median hold duration</td>
+<td align="right">111.800 ms</td>
+</tr>
+</table>
 
-This is an exploratory finding and does not establish a stable periodic typing behavior.
+Interpretation: The average hold duration was approximately 111.3 milliseconds. The standard deviation of approximately 15.2 milliseconds indicates variation in hold duration across the selected repetitions.
 
-Visualizations
-Time-Domain Plot
+Frequency-Domain Results
+
+<table>
+<tr>
+<th align="left">Metric</th>
+<th align="right">Result</th>
+</tr>
+<tr>
+<td>Frequency resolution</td>
+<td align="right">0.0200 cycles/repetition</td>
+</tr>
+<tr>
+<td>Dominant nonzero frequency</td>
+<td align="right"><b>0.3600 cycles/repetition</b></td>
+</tr>
+<tr>
+<td>Approximate spectral period</td>
+<td align="right">2.78 repetitions</td>
+</tr>
+<tr>
+<td>Peak amplitude</td>
+<td align="right">0.008922 s (approx.)</td>
+</tr>
+</table>
+
+Interpretation: The strongest nonzero spectral component occurred at 0.36 cycles per repetition, corresponding to an approximate period of 2.78 repetitions.
+
+This is an exploratory result based on a short sequence. It should not be interpreted as evidence that the participant exhibits a stable typing rhythm.
+
+📈 Visualizations
+
+The notebook generates two PNG figures and saves them in the outputs/ directory.
+
+1. Time-Domain Plot
+
+<p align="center">
+<img src="outputs/time_domain_H_period.png" alt="Time-domain plot showing period-key hold duration across repetitions" width="100%">
+</p>
+
+<p align="center">
+<b>Figure 1.</b> Period-key hold duration across 50 repetitions.
+</p>
+
+The plot shows how the hold duration changes from one repetition to the next. The red dashed line indicates the mean, making it easier to compare individual measurements with the overall average.
 
 File: outputs/time_domain_H_period.png
 
-Displays key hold duration against repetition number. The dashed horizontal line represents the mean hold duration.
+2. Frequency-Domain Plot
 
-!Time-domain analysis of H.period
+<p align="center">
+<img src="outputs/fft_H_period.png" alt="FFT amplitude spectrum of period-key hold duration" width="100%">
+</p>
 
-Frequency-Domain Plot
+<p align="center">
+<b>Figure 2.</b> One-sided FFT amplitude spectrum after detrending and Hann windowing.
+</p>
+
+The spectrum shows the distribution of variation across repetition-order frequencies. The highlighted peak identifies the strongest nonzero component in the analyzed sequence.
 
 File: outputs/fft_H_period.png
 
-Displays the one-sided FFT amplitude spectrum after detrending and Hann windowing. The dominant nonzero frequency is highlighted.
-
-!FFT amplitude spectrum of H.period
+Note: The plots will appear here on GitHub when the image files are present at the specified repository paths.
 
 🗂️ Project Structure
 text
@@ -155,35 +280,38 @@ Keyboard_interaction/
 ├── README.md
 └── requirements.txt
 
-Directory / File	Description
-data/	Locally stored dataset
-notebooks/	Jupyter Notebook containing the analysis
-outputs/	Generated visualization files
-src/	Supporting Python scripts
-requirements.txt	Python dependencies
-README.md	Project documentation
-Note: Do not commit the dataset to version control unless its redistribution terms have been verified.
-Getting Started
+File or directory	Purpose
+data/	Stores the locally downloaded dataset
+notebooks/	Contains the analysis notebook
+outputs/	Stores generated plots
+src/	Contains supporting Python scripts
+.gitignore	Specifies files excluded from version control
+requirements.txt	Lists Python dependencies
+README.md	Provides project documentation
+
+Keep the dataset out of version control unless its redistribution terms have been verified.
+
+🚀 Installation and Execution
 Prerequisites
-Python 3.12 or a compatible version
+Python 3.12 or a compatible Python version
 pip
 Jupyter Notebook
-Step 1 — Navigate to the Project
+Step 1: Open the Project Directory
 
-Open Command Prompt on Windows:
+On Windows, open Command Prompt and run:
 
 cmd
 cd /d "C:\HCI LAB\Keyboard_interaction"
 
 
-Replace the path with your actual project directory if necessary.
+Change the path if your project is stored elsewhere.
 
-Step 2 — Install Dependencies
-bash
+Step 2: Install Dependencies
+cmd
 python -m pip install -r requirements.txt
 
 
-If requirements.txt does not exist, create it with the following contents:
+If you do not already have a requirements.txt file, create one containing:
 
 text
 pandas
@@ -193,52 +321,65 @@ scipy
 jupyter
 ipykernel
 
-Step 3 — Launch Jupyter Notebook
-bash
+Step 3: Launch Jupyter Notebook
+cmd
 python -m jupyter notebook
 
-Step 4 — Run the Analysis
+Step 4: Open the Notebook
 
-Open:
+Open this file in Jupyter:
 
 text
 notebooks/time_series_analysis.ipynb
 
 
-Run all cells from top to bottom.
+Run the notebook cells from top to bottom.
 
-The notebook will load the dataset, calculate statistics, perform FFT analysis, generate both plots, and verify that the output files have been saved.
+Expected Outputs
 
-Important: Ensure that data/DSL-StrongPasswordData.csv exists before running the notebook.
+After a successful run, the following files should exist:
 
-Limitations
-The detailed analysis covers only one participant, one session, and 50 repetitions.
-Results cannot be generalized to all participants or keyboard interactions.
-Repetition order is not equivalent to continuous-time sampling.
-FFT frequencies are expressed in cycles per repetition, not hertz.
-A dominant spectral peak does not prove the existence of a stable behavioral cycle.
-Results may depend on the selected feature and preprocessing methods.
-The project does not implement or evaluate a keystroke-based authentication system.
-
-The results should be interpreted as an educational demonstration of time-domain and frequency-domain analysis.
+text
+outputs/
+├── time_domain_H_period.png
+└── fft_H_period.png
 
 
-Attribution
+The notebook also prints the descriptive statistics, dominant FFT frequency, approximate spectral period, and output-file verification results.
+
+⚠️ Limitations
+Small analysis sample: Only one participant, one session, and 50 repetitions are analyzed in detail.
+Limited generalizability: Results cannot represent all participants or keyboard interactions.
+Repetition-order sampling: The sequence is not a continuous-time signal sampled at uniform time intervals.
+Exploratory frequency analysis: A dominant spectral component does not establish a stable behavioral cycle.
+Preprocessing sensitivity: Results may depend on the selected feature, detrending, windowing, and participant.
+No authentication evaluation: The project does not train or test a keystroke authentication model.
+
+The findings should be treated as an educational demonstration of statistical analysis and signal processing.
+
+🔮 Future Improvements
+Compare multiple sessions for the same participant.
+Analyze multiple participants to study between-person variation.
+Investigate additional hold-time and digraph timing features.
+Compare distributions using histograms and box plots.
+Examine spectral stability across longer sequences.
+Compare different detrending and windowing methods.
+Automate the analysis across participants and sessions.
+Add data validation and automated tests.
+📚 Attribution and License
 
 Dataset: CMU Keystroke Dynamics Benchmark.
 
-The dataset was developed for research into keystroke dynamics. This project uses the dataset for an educational analysis involving descriptive statistics, time-series visualization, and FFT.
+This project uses the benchmark for an educational analysis involving descriptive statistics, time-series visualization, and FFT. It is not a reproduction of the benchmark's original anomaly-detection evaluation.
 
-It is not a reproduction of the benchmark's original anomaly-detection evaluation.
+Consult the original CMU documentation for the appropriate dataset citation and reuse terms.
 
-Consult the original CMU dataset documentation for the appropriate citation and reuse terms.
+Code license: Not yet specified.
 
-License
-
-The license for this project's analysis code has not yet been specified. Dataset reuse and redistribution remain subject to the original dataset's terms. The code and dataset should not be assumed to share the same license.
+The analysis code and the dataset may be subject to different licensing terms. Do not assume that permission to use one automatically grants permission to redistribute the other.
 
 <p align="center">
-<i>Developed as part of a Human-Computer Interaction (HCI) lab project.</i>
+<b>⌨️ Human-Computer Interaction Lab Project</b>
 <br>
-<b>Python · Pandas · NumPy · SciPy · Matplotlib · Jupyter Notebook</b>
+<sub>Built with Python, Pandas, NumPy, SciPy, Matplotlib, and Jupyter Notebook.</sub>
 </p>
